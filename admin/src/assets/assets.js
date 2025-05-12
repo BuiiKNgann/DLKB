@@ -12,7 +12,15 @@ import appointments_icon from "./appointments_icon.svg";
 import earning_icon from "./earning_icon.svg";
 import patients_icon from "./patients_icon.svg";
 import MediConnect_logo1 from "./MediConnect_logo1.png";
+import medical from "./medical.svg";
+import money from "./money.svg";
+import doctor from "./doctor.svg";
+import patient from "./patient.svg";
+
 export const assets = {
+  patient,
+  medical,
+  money,
   add_icon,
   admin_logo,
   appointment_icon,
@@ -27,4 +35,5 @@ export const assets = {
   appointments_icon,
   earning_icon,
   MediConnect_logo1,
+  doctor,
 };

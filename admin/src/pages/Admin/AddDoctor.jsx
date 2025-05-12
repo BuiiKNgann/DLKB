@@ -98,7 +98,7 @@ const AddDoctor = () => {
                 value={name}
                 className="border rounded px-3 py-2"
                 type="text"
-                placeholder="Name"
+                placeholder=""
                 required
               />
             </div>
@@ -110,7 +110,7 @@ const AddDoctor = () => {
                 value={email}
                 className="border rounded px-3 py-2"
                 type="email"
-                placeholder="Email"
+                placeholder=""
                 required
               />
             </div>
@@ -122,7 +122,7 @@ const AddDoctor = () => {
                 value={password}
                 className="border rounded px-3 py-2"
                 type="password"
-                placeholder="Password"
+                placeholder=""
                 required
               />
             </div>
@@ -146,6 +146,16 @@ const AddDoctor = () => {
                 <option value="8 năm">8 năm</option>
                 <option value="9 năm">9 năm</option>
                 <option value="10 năm">10 năm</option>
+                <option value="11 năm">11 năm</option>
+                <option value="12 năm">12 năm</option>
+                <option value="13 năm">13 năm</option>
+                <option value="14 năm">14 năm</option>
+                <option value="15 năm">15 năm</option>
+                <option value="16 năm">16 năm</option>
+                <option value="17 năm">17 năm</option>
+                <option value="18 năm">18 năm</option>
+                <option value="19 năm">19 năm</option>
+                <option value="20 năm">20 năm</option>
               </select>
             </div>
 
@@ -156,7 +166,7 @@ const AddDoctor = () => {
                 value={fees}
                 className="border rounded px-3 py-2"
                 type="number"
-                placeholder="fees"
+                placeholder=""
                 required
               />
             </div>
@@ -172,12 +182,12 @@ const AddDoctor = () => {
                 name=""
                 id=""
               >
-                <option value="General physician">Bác sĩ đa khoa</option>
-                <option value="Gynecologist">Bác sĩ phụ khoa</option>
-                <option value="Dermatologist">Bác sĩ da liễu</option>
-                <option value="Pediatricians">Bác sĩ nhi khoa</option>
-                <option value="Neurologist">Bác sĩ thần kinh</option>
-                <option value="Gastroenterologist">Bác sĩ tiêu hóa</option>
+                <option value="Tổng quát">Tổng quát</option>
+                <option value="Sản phụ khoa">Sản phụ khoa</option>
+                <option value="Da liễu">Da liễu</option>
+                <option value="Nhi khoa">Nhi khoa</option>
+                <option value="Thần kinh">Thần kinh</option>
+                <option value="Tiêu hóa">Tiêu hóa</option>
               </select>
             </div>
 
@@ -188,7 +198,7 @@ const AddDoctor = () => {
                 value={degree}
                 className="border rounded px-3 py-2"
                 type="text"
-                placeholder="Education"
+                placeholder=""
                 required
               />
             </div>
@@ -200,7 +210,7 @@ const AddDoctor = () => {
                 value={address1}
                 className="border rounded px-3 py-2"
                 type="text"
-                placeholder="address 1"
+                placeholder=""
                 required
               />
               <input
@@ -208,7 +218,7 @@ const AddDoctor = () => {
                 value={address2}
                 className="border rounded px-3 py-2"
                 type="text"
-                placeholder="address 2"
+                placeholder=""
                 required
               />
             </div>
@@ -221,7 +231,7 @@ const AddDoctor = () => {
             onChange={(e) => setAbout(e.target.value)}
             value={about}
             className="w-full px-4 pt-2 border rounded"
-            placeholder="write about doctor"
+            placeholder=""
             rows={5}
             required
           />

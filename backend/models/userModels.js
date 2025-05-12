@@ -13,7 +13,7 @@ const userSchema = new mongoose.Schema({
   gender: { type: String, default: "Not Selected" },
   dob: { type: String, default: "Not Selected" },
   phone: { type: String, default: "0000000000" },
-  // favoriteDoctors: [{ type: mongoose.Schema.Types.ObjectId, ref: "doctor" }],
+  favoriteDoctors: [{ type: mongoose.Schema.Types.ObjectId, ref: "doctor" }],
 });
 const userModel = mongoose.models.user || mongoose.model("user", userSchema);
 export default userModel;

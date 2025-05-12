@@ -67,6 +67,16 @@ const Navbar = () => {
           >
             <li className="py-2">Liên hệ</li>
           </NavLink>
+          {/* <NavLink
+            to="/favorite-doctors"
+            className={({ isActive }) =>
+              isActive
+                ? "text-seconds border-b-2 border-seconds"
+                : "text-gray-700 hover:text-seconds"
+            }
+          >
+            <li className="py-2">Yêu thích</li>
+          </NavLink> */}
         </ul>
 
         <div className="flex items-center gap-6">
@@ -98,6 +108,12 @@ const Navbar = () => {
                     className="px-3 py-2 hover:bg-gray-100 hover:text-seconds rounded-md transition-colors cursor-pointer"
                   >
                     Lịch khám của tôi
+                  </p>
+                  <p
+                    onClick={() => navigate("favorite-doctors")}
+                    className="px-3 py-2 hover:bg-gray-100 hover:text-seconds rounded-md transition-colors cursor-pointer"
+                  >
+                    Bác sĩ yêu thích
                   </p>
                   <div className="w-full h-px bg-gray-200 my-1"></div>
                   <p

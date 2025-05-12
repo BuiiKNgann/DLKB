@@ -1,38 +1,88 @@
+// import { createContext } from "react";
+
+// export const AppContext = createContext();
+
+// const AppContextProvider = (props) => {
+//   const currency = "$";
+//   const calculateAge = (dob) => {
+//     const today = new Date();
+//     const birthDate = new Date(dob);
+
+//     let age = today.getFullYear() - birthDate.getFullYear();
+//     return age;
+//   };
+
+//   const months = [
+//     " ",
+//     "Jan",
+//     "Feb",
+//     "Mar",
+//     "Apr",
+//     "May",
+//     "Jun",
+//     "Aug",
+//     "Sep",
+//     "Oct",
+//     "Nov",
+//   ];
+//   const slotDateFormat = (slotDate) => {
+//     const dateArray = slotDate.split("_");
+//     return (
+//       dateArray[0] + " " + months[Number(dateArray[1])] + " " + dateArray[2]
+//     );
+//   };
+
+//   const value = { calculateAge, slotDateFormat, currency };
+//   return (
+//     <AppContext.Provider value={value}>{props.children}</AppContext.Provider>
+//   );
+// };
+
+// export default AppContextProvider;
 import { createContext } from "react";
 
 export const AppContext = createContext();
 
 const AppContextProvider = (props) => {
-  const currency = "$";
+  // ✅ Format tiền VND
+  const currencyFormatter = new Intl.NumberFormat("vi-VN", {
+    style: "currency",
+    currency: "VND",
+  });
+
+  // ✅ Tính tuổi
   const calculateAge = (dob) => {
     const today = new Date();
     const birthDate = new Date(dob);
-
     let age = today.getFullYear() - birthDate.getFullYear();
     return age;
   };
 
+  // ✅ Tháng tiếng Việt
   const months = [
-    " ",
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
+    "", // index 0 bỏ trống
+    "Tháng 1",
+    "Tháng 2",
+    "Tháng 3",
+    "Tháng 4",
+    "Tháng 5",
+    "Tháng 6",
+    "Tháng 7",
+    "Tháng 8",
+    "Tháng 9",
+    "Tháng 10",
+    "Tháng 11",
+    "Tháng 12",
   ];
+
+  // ✅ Format ngày slot đẹp
   const slotDateFormat = (slotDate) => {
-    const dateArray = slotDate.split("_");
-    return (
-      dateArray[0] + " " + months[Number(dateArray[1])] + " " + dateArray[2]
-    );
+    const dateArray = slotDate.split("_"); // VD: 28_4_2024
+    return `${dateArray[0]} ${months[Number(dateArray[1])]} ${dateArray[2]}`;
   };
 
-  const value = { calculateAge, slotDateFormat, currency };
+  const value = { calculateAge, slotDateFormat, currencyFormatter };
+
   return (
     <AppContext.Provider value={value}>{props.children}</AppContext.Provider>
   );

@@ -32,20 +32,20 @@ const addDoctor = async (req, res) => {
       !fees ||
       !address
     ) {
-      return res.json({ success: false, message: "Missing Details" });
+      return res.json({ success: false, message: "Hãy nhập đủ thông tin" });
     }
     // Kiểm tra định dạng email
     if (!validator.isEmail(email)) {
       return res.json({
         success: false,
-        message: "Please enter a valid email",
+        message: "Hãy nhập đúng định dạng email",
       });
     }
     // Kiểm tra độ dài password:
     if (password.length < 8) {
       return res.json({
         success: false,
-        message: "Please enter a strong password",
+        message: "Hãy nhập mật khẩu mạnh",
       });
     }
     // hashing doctor password
@@ -76,7 +76,7 @@ const addDoctor = async (req, res) => {
     };
     const newDoctor = new doctorModel(doctorData);
     await newDoctor.save();
-    res.json({ success: true, message: "Doctor Added" });
+    res.json({ success: true, message: "Bác sĩ đã thêm thành công" });
   } catch (error) {
     console.log(error);
     res.json({ success: false, message: error.message });
@@ -94,7 +94,10 @@ const loginAdmin = async (req, res) => {
       const token = jwt.sign(email + password, process.env.JWT_SECRET);
       res.json({ success: true, token });
     } else {
-      res.json({ success: false, message: "Invalid credentials" });
+      res.json({
+        success: false,
+        message: "Thông tin đăng nhập không hợp lệ.",
+      });
     }
   } catch (error) {
     console.log(error);
@@ -125,24 +128,66 @@ const appointmentsAdmin = async (req, res) => {
 };
 
 // API hủy lịch hẹn
+// const appointmentCancel = async (req, res) => {
+//   try {
+//     const { appointmentId } = req.body;
+
+//     const appointmentData = await appointmentModel.findById(appointmentId);
+
+//     await appointmentModel.findByIdAndUpdate(appointmentId, {
+//       cancelled: true,
+//     });
+//     //releasing doctor slot
+//     const { docId, slotDate, slotTime } = appointmentData;
+//     const doctorData = await doctorModel.findById(docId);
+//     let slots_booked = doctorData.slots_booked;
+//     slots_booked[slotDate] = slots_booked[slotDate].filter(
+//       (e) => e !== slotTime
+//     );
+//     await doctorModel.findByIdAndUpdate(docId, { slots_booked });
+//     res.json({ success: true, message: "Appointment Cancelled" });
+//   } catch (error) {
+//     console.log(error);
+//     res.json({ success: false, message: error.message });
+//   }
+// };
 const appointmentCancel = async (req, res) => {
   try {
-    const { appointmentId } = req.body;
+    const { appointmentId, cancelReasons } = req.body; // ✨ nhận thêm cancelReasons từ body
 
     const appointmentData = await appointmentModel.findById(appointmentId);
 
+    if (!appointmentData) {
+      return res.json({ success: false, message: "Không tìm thấy lịch khám" });
+    }
+
+    // 1. Cập nhật trạng thái hủy và lưu lý do
     await appointmentModel.findByIdAndUpdate(appointmentId, {
       cancelled: true,
+      cancelReason: Array.isArray(cancelReasons)
+        ? cancelReasons
+        : [cancelReasons],
     });
-    //releasing doctor slot
+
+    // 2. Giải phóng slot
     const { docId, slotDate, slotTime } = appointmentData;
     const doctorData = await doctorModel.findById(docId);
     let slots_booked = doctorData.slots_booked;
-    slots_booked[slotDate] = slots_booked[slotDate].filter(
-      (e) => e !== slotTime
-    );
+
+    if (slots_booked[slotDate]) {
+      slots_booked[slotDate] = slots_booked[slotDate].filter(
+        (e) => e !== slotTime
+      );
+
+      // Nếu slots_booked[slotDate] rỗng sau khi xóa -> xóa luôn ngày đó để DB gọn gàng
+      if (slots_booked[slotDate].length === 0) {
+        delete slots_booked[slotDate];
+      }
+    }
+
     await doctorModel.findByIdAndUpdate(docId, { slots_booked });
-    res.json({ success: true, message: "Appointment Cancelled" });
+
+    res.json({ success: true, message: "Đã hủy có lý do" });
   } catch (error) {
     console.log(error);
     res.json({ success: false, message: error.message });
@@ -168,6 +213,57 @@ const adminDashboard = async (req, res) => {
     res.json({ success: false, message: error.message });
   }
 };
+//  API admin cập nhật thông tin bác sĩ
+const updateDoctorByAdmin = async (req, res) => {
+  try {
+    const { doctorId, name, speciality, address, fees, about, experience } =
+      req.body;
+
+    await doctorModel.findByIdAndUpdate(doctorId, {
+      name,
+      speciality,
+      address,
+      fees,
+      about,
+      experience,
+    });
+
+    res.json({
+      success: true,
+      message: "Cập nhật thông tin bác sĩ thành công",
+    });
+  } catch (error) {
+    console.log(error);
+    res.json({ success: false, message: error.message });
+  }
+};
+// API admin xóa bác sĩ
+const deleteDoctorByAdmin = async (req, res) => {
+  try {
+    const { doctorId } = req.params;
+
+    // Kiểm tra xem doctorId có hợp lệ không
+    if (!doctorId) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Mã bác sĩ không hợp lệ" });
+    }
+
+    const deletedDoctor = await doctorModel.findByIdAndDelete(doctorId);
+
+    if (!deletedDoctor) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Không tìm thấy bác sĩ" });
+    }
+
+    res.json({ success: true, message: "Xóa bác sĩ thành công" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 export {
   addDoctor,
   loginAdmin,
@@ -175,4 +271,6 @@ export {
   appointmentsAdmin,
   appointmentCancel,
   adminDashboard,
+  updateDoctorByAdmin,
+  deleteDoctorByAdmin,
 };

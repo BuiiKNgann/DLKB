@@ -9,6 +9,7 @@ import {
   doctorDashboard,
   doctorProfile,
   updateDoctorProfile,
+  availableDoctors,
 } from "../controllers/doctorController.js";
 const doctorRouter = express.Router();
 doctorRouter.get("/list", doctorList);
@@ -19,5 +20,5 @@ doctorRouter.post("/cancel-appointment", authDoctor, appointmentCancel);
 doctorRouter.get("/dashboard", authDoctor, doctorDashboard);
 doctorRouter.get("/profile", authDoctor, doctorProfile);
 doctorRouter.post("/update-profile", authDoctor, updateDoctorProfile);
-
+doctorRouter.get("/available", availableDoctors);
 export default doctorRouter;

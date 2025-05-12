@@ -10,8 +10,11 @@ import MyAppointments from "./pages/MyAppointments";
 import Appointment from "./pages/Appointment";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import FavoriteDoctors from "./pages/FavoriteDoctors";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Chatbot from "./components/Chatbot";
+
 const App = () => {
   return (
     <div className="flex flex-col min-h-screen">
@@ -28,7 +31,12 @@ const App = () => {
           <Route path="/my-profile" element={<MyProfile />} />
           <Route path="/my-appointments" element={<MyAppointments />} />
           <Route path="/appointment/:docId" element={<Appointment />} />
+          <Route path="/favorite-doctors" element={<FavoriteDoctors />} />
         </Routes>
+        {/* Các nội dung khác */}
+
+        <Chatbot />
+
         <Footer />
       </div>
     </div>

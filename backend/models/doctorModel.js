@@ -13,8 +13,8 @@ const doctorSchema = new mongoose.Schema(
     fees: { type: Number, required: true },
     address: { type: Object, required: true },
     date: { type: Number, required: true },
-    // reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: "Review" }],
-    // averageRating: { type: Number, default: 0 },
+    reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: "Review" }],
+    averageRating: { type: Number, default: 0 },
 
     slots_booked: { type: Object, default: {} },
   },
