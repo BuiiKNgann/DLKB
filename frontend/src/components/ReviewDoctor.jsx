@@ -10,7 +10,7 @@ const ReviewDoctor = () => {
 
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState("");
-  const [reviews, setReviews] = useState([]);
+  const [reviews, setReviews] = useState([]); //Danh sách đánh giá của bác sĩ
 
   const fetchReviews = async () => {
     try {
@@ -27,7 +27,7 @@ const ReviewDoctor = () => {
       toast.error(error.response?.data?.message || "Server Error");
     }
   };
-
+  //Gửi đánh giá mới của người dùng về bác sĩ đến backend.
   const submitReview = async () => {
     if (!token) {
       return toast.warning("Bạn cần đăng nhập để đánh giá");

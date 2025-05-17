@@ -7,7 +7,7 @@ const authUser = (req, res, next) => {
     if (!token) {
       return res.json({
         success: false,
-        message: "Not Authorized. Please login again.",
+        message: "Vui lòng đăng nhập lại",
       });
     }
     // Giải mã token
@@ -27,3 +27,5 @@ export default authUser;
 // Gán ID người dùng: Lưu ID người dùng từ token vào req.userId.
 // Chuyển tiếp: Gọi next() để tiếp tục xử lý nếu xác thực thành công.
 // Xử lý lỗi: Bắt lỗi (token không hợp lệ, hết hạn) và trả về thông báo lỗi.
+//JWT là một chuỗi mã hóa chứa thông tin (dữ liệu)
+// mục đích là xác thực vào trao đổi thông tin

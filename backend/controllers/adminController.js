@@ -128,32 +128,10 @@ const appointmentsAdmin = async (req, res) => {
 };
 
 // API hủy lịch hẹn
-// const appointmentCancel = async (req, res) => {
-//   try {
-//     const { appointmentId } = req.body;
 
-//     const appointmentData = await appointmentModel.findById(appointmentId);
-
-//     await appointmentModel.findByIdAndUpdate(appointmentId, {
-//       cancelled: true,
-//     });
-//     //releasing doctor slot
-//     const { docId, slotDate, slotTime } = appointmentData;
-//     const doctorData = await doctorModel.findById(docId);
-//     let slots_booked = doctorData.slots_booked;
-//     slots_booked[slotDate] = slots_booked[slotDate].filter(
-//       (e) => e !== slotTime
-//     );
-//     await doctorModel.findByIdAndUpdate(docId, { slots_booked });
-//     res.json({ success: true, message: "Appointment Cancelled" });
-//   } catch (error) {
-//     console.log(error);
-//     res.json({ success: false, message: error.message });
-//   }
-// };
 const appointmentCancel = async (req, res) => {
   try {
-    const { appointmentId, cancelReasons } = req.body; // ✨ nhận thêm cancelReasons từ body
+    const { appointmentId, cancelReasons } = req.body; //  nhận thêm cancelReasons từ body
 
     const appointmentData = await appointmentModel.findById(appointmentId);
 
@@ -170,16 +148,21 @@ const appointmentCancel = async (req, res) => {
     });
 
     // 2. Giải phóng slot
+    //slots_booked, là một object lưu trữ các slot thời gian đã được đặt theo ngày.
+    //Key là ngày (slotDate, ví dụ: "2025-05-17").
+    //Value là một mảng các khung giờ (slotTime, ví dụ: "09:00").
     const { docId, slotDate, slotTime } = appointmentData;
     const doctorData = await doctorModel.findById(docId);
     let slots_booked = doctorData.slots_booked;
-
+    //Xác định xem ngày slotDate (ví dụ: "2025-05-17") có trong slots_booked hay không.
+    //Nếu có, slots_booked[slotDate] là một mảng các khung giờ (ví dụ: ["09:00", "10:00"]).
+    //Dùng phương thức filter để tạo một mảng mới, loại bỏ slotTime (ví dụ: "09:00") khỏi mảng slots_booked[slotDate].
     if (slots_booked[slotDate]) {
       slots_booked[slotDate] = slots_booked[slotDate].filter(
         (e) => e !== slotTime
       );
 
-      // Nếu slots_booked[slotDate] rỗng sau khi xóa -> xóa luôn ngày đó để DB gọn gàng
+      // Xóa ngày nếu không còn slot
       if (slots_booked[slotDate].length === 0) {
         delete slots_booked[slotDate];
       }

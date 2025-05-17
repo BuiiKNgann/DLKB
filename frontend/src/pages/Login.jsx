@@ -29,11 +29,13 @@ const Login = () => {
         } else {
           toast.error(data.messge);
         }
+        // const { data } lấy dữ liệu từ server sau khi gọi apiapi, bao gồm token (JWT) mà bạn hỏi trước đó. Token này được lưu vào localStorage để sử dụng cho các yêu cầu xác thực sau.
       } else {
         const { data } = await axios.post(backendUrl + "/api/user/login", {
           password,
           email,
         });
+        //localStorage: Là một cơ chế lưu trữ dữ liệu phía client, cho phép lưu trữ các cặp key-value dưới dạng chuỗi.
         if (data.success) {
           localStorage.setItem("token", data.token);
           setToken(data.token);

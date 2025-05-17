@@ -67,27 +67,27 @@ export const assets = {
 
 export const specialityData = [
   {
-    speciality: "Bác sĩ đa khoa",
+    speciality: "Tổng quát",
     image: General_physician,
   },
   {
-    speciality: "Bác sĩ phụ khoa",
+    speciality: "Sản phụ khoa",
     image: Gynecologist,
   },
   {
-    speciality: "Bác sĩ da liễu",
+    speciality: "Da liễu",
     image: Dermatologist,
   },
   {
-    speciality: "Bác sĩ nhi khoa",
+    speciality: "Nhi khoa",
     image: Pediatricians,
   },
   {
-    speciality: "Bác sĩ thần kinh",
+    speciality: "Thần kinh",
     image: Neurologist,
   },
   {
-    speciality: "Bác sĩ tiêu hóa",
+    speciality: "Tiêu hóa",
     image: Gastroenterologist,
   },
 ];

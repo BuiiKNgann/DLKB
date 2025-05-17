@@ -13,14 +13,14 @@ const addFavoriteDoctor = async (req, res) => {
     const { doctorId } = req.body;
     const userId = req.userId;
 
-    // 🔥 Kiểm tra doctorId hợp lệ
+    //  Kiểm tra doctorId hợp lệ
     if (!doctorId || !mongoose.Types.ObjectId.isValid(doctorId)) {
       return res
         .status(400)
         .json({ success: false, message: "Mã bác sĩ hợp lệ" });
     }
 
-    // 🔥 Tìm doctor
+    //   Tìm doctor
     const doctor = await doctorModel.findById(doctorId);
     if (!doctor) {
       return res
@@ -34,13 +34,13 @@ const addFavoriteDoctor = async (req, res) => {
         .status(404)
         .json({ success: false, message: "Không tìm thấy người dùng" });
     }
-
+    //Kiểm tra bác sĩ đã có trong danh sách yêu thích chưa
     if (user.favoriteDoctors.includes(doctorId)) {
       return res
         .status(400)
         .json({ success: false, message: "Đã thêm bác sĩ vào yêu thích" });
     }
-
+    //Thêm bác sĩ vào danh sách yêu thích
     user.favoriteDoctors.push(doctorId);
     await user.save();
 
@@ -57,14 +57,16 @@ export const getFavoriteDoctors = async (req, res) => {
   try {
     const userId = req.userId;
 
+    //Tìm người dùng và populate danh sách bác sĩ yêu thích
     const user = await userModel.findById(userId).populate("favoriteDoctors");
 
+    //Kiểm tra người dùng tồn tại
     if (!user) {
       return res
         .status(404)
         .json({ success: false, message: "Không tìm thấy người dùng" });
     }
-
+    //Trả về danh sách bác sĩ yêu thích
     return res.status(200).json({
       success: true,
       favoriteDoctors: user.favoriteDoctors,
@@ -74,7 +76,8 @@ export const getFavoriteDoctors = async (req, res) => {
     return res.status(500).json({ success: false, message: "Server Error" });
   }
 };
-
+// favId.toString() được sử dụng vì favId là một ObjectId,  và doctorId (lấy từ req.params) là một chuỗi.
+// So sánh trực tiếp có thể không chính xác, nên cần chuyển favId về chuỗi để so sánh.
 // API: Xoá bác sĩ khỏi danh sách yêu thích
 export const removeFavoriteDoctor = async (req, res) => {
   try {
@@ -94,7 +97,9 @@ export const removeFavoriteDoctor = async (req, res) => {
         .status(400)
         .json({ success: false, message: "Bác sĩ không có trong yêu thích" });
     }
-
+    //Lọc bác sĩ khỏi danh sách yêu thích
+    //Phương thức filter tạo một mảng mới, giữ lại các phần tử thỏa mãn điều kiện trong hàm callback.
+    //Nếu favId.toString() !== doctorId, favId được giữ lại; nếu bằng, favId bị loại bỏ.
     user.favoriteDoctors = user.favoriteDoctors.filter(
       (favId) => favId.toString() !== doctorId
     );
@@ -135,6 +140,8 @@ const registerUser = async (req, res) => {
     // hashing user password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
+    //dữ liệu sẽ được sử dụng để tạo một bản ghi người dùng mới trong cơ sở dữ liệu.
+    //nghĩa là nó sẽ tạo ra 1 đối tượng  chứa bản ghi mới vào cơ sở dữ liệu dựa vào schema
     const userData = {
       name,
       email,
@@ -144,7 +151,7 @@ const registerUser = async (req, res) => {
     //Tạo một đối tượng người dùng mới dựa trên schema
 
     const user = await newUser.save();
-    //id người dùng sẽ được mã dựa vào JWT_SECRET này
+    //id người dùng sẽ được mã hóa dựa vào JWT_SECRET này
     //Khi người dùng gửi lại chuỗi JWT, server sử dụng JWT_SECRET để xác minh
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
     res.json({ success: true, token });
@@ -197,7 +204,8 @@ const updateProfile = async (req, res) => {
     if (!name || !phone || !dob || !gender) {
       return res.json({ success: false, message: "Thiếu thông tin" });
     }
-
+    // Nếu là chuỗi, chuyển nó thành đối tượng bằng JSON.parse.
+    // Nếu không phải chuỗi (đã là đối tượng, mảng, v.v.), giữ nguyên giá trị.
     const updateData = {
       name,
       phone,
@@ -206,14 +214,19 @@ const updateProfile = async (req, res) => {
       address: typeof address === "string" ? JSON.parse(address) : address,
     };
     // Xử lý tải ảnh lên Cloudinary
+    //imageFile là biến chứa thông tin về file ảnh
+    //path: Đường dẫn đến file tạm trên server (ví dụ: "uploads/abc123.jpg").
     //imageFile.path: Đường dẫn đến file ảnh trên server.
     //resource_type: "image": Chỉ định loại tài nguyên là ảnh (Cloudinary cũng hỗ trợ video, file thô, v.v.).
+    //  cloudinary.uploader.upload: Đây là phương thức của thư viện Cloudinary SDK (phiên bản v2) để tải file lên Cloudinary.
     if (imageFile) {
       const imageUpload = await cloudinary.uploader.upload(imageFile.path, {
         resource_type: "image",
       });
       //Thêm trường image vào đối tượng updateData với giá trị là URL của ảnh
       //updateData là đối tượng chứa các thông tin cần cập nhật (như name, phone, address, dob, gender)
+      // secure_url là URL HTTPS của ảnh
+      //Thêm trường image vào đối tượng updateData với giá trị là URL HTTPS của ảnh vừa tải lên Cloudinary.
       updateData.image = imageUpload.secure_url;
     }
 
@@ -227,62 +240,11 @@ const updateProfile = async (req, res) => {
 // API đặt lịch khám
 
 // API to book appointment
-// const bookAppointment = async (req, res) => {
-//   try {
-//     const { userId, docId, slotDate, slotTime } = req.body;
-//     const docData = await doctorModel.findById(docId).select("-password");
-//     if (!docData.available) {
-//       return res.json({ success: false, message: "Doctor not available" });
-//     }
-//     let slots_booked = docData.slots_booked;
-//     // checking for slot availablity
-//     if (slots_booked[slotDate]) {
-//       if (slots_booked[slotDate].includes(slotTime)) {
-//         return res.json({ success: false, message: "Slot not available" });
-//       } else {
-//         slots_booked[slotDate].push(slotTime);
-//       }
-//     } else {
-//       slots_booked[slotDate] = [];
-//       slots_booked[slotDate].push(slotTime);
-//     }
 
-//     const userData = await userModel.findById(userId).select("-password");
-//     delete docData.slots_booked;
-
-//     const appointmentData = {
-//       userId,
-//       docId,
-//       userData,
-//       docData,
-//       amount: docData.fees,
-//       slotTime,
-//       slotDate,
-//       date: Date.now(),
-//     };
-//     const newAppointment = new appointmentModel(appointmentData);
-//     await newAppointment.save();
-
-//     //save new slots dâta in docData
-//     await doctorModel.findByIdAndUpdate(docId, { slots_booked });
-//     res.json({ success: true, message: "Appointment Booked" });
-//   } catch (error) {
-//     console.log("Update error:", error);
-//     res.json({ success: false, message: error.message });
-//   }
-// };
 const bookAppointment = async (req, res) => {
   try {
-    console.log("Request body:", req.body);
-    console.log("Auth userId:", req.userId);
-
     const userId = req.userId; // Lấy userId từ middleware auth
     const { docId, slotDate, slotTime } = req.body; //Destructuring từ req.body
-
-    console.log("userId:", userId);
-    console.log("docId:", docId);
-    console.log("slotDate:", slotDate);
-    console.log("slotTime:", slotTime);
 
     if (!userId) {
       return res.json({
@@ -296,7 +258,6 @@ const bookAppointment = async (req, res) => {
     }
 
     const docData = await doctorModel.findById(docId).select("-password");
-    console.log("docData:", docData ? "Tìm thấy" : "Không tìm thấy");
 
     if (!docData) {
       return res.json({ success: false, message: "Không tìm thấy bác sĩ" });
@@ -319,13 +280,14 @@ const bookAppointment = async (req, res) => {
       }
 
       //Phần này thực thi khi ngày (slotDate) mà người dùng muốn đặt lịch chưa có bất kỳ slot nào được đặt trong đối tượng slots_booked.
+      // Tạo mảng mới cho slotDate trong slots_booked
+      // Thêm slotTime vào mảng này.
     } else {
       slots_booked[slotDate] = [];
       slots_booked[slotDate].push(slotTime);
     }
     // Lấy thông tin người dùng từ cơ sở dữ liệu
     const userData = await userModel.findById(userId).select("-password");
-    console.log("userData:", userData ? "Tìm thấy" : "Không tìm thấy");
 
     if (!userData) {
       return res.json({
@@ -333,7 +295,13 @@ const bookAppointment = async (req, res) => {
         message: "Không tìm thấy thông tin người dùng",
       });
     }
-    //Khi tạo dữ liệu đặt lịch hẹn, không cần lưu thông tin về các slot đã được đặt trong đối tượng docData
+
+    //Chuẩn bị dữ liệu lịch hẹn
+
+    //delete docData.slots_booked: Xóa trường slots_booked khỏi docData để tránh lưu dữ liệu không cần thiết vào bản ghi lịch hẹn.
+    // slots_booked giống như lịch làm việc đầy đủ của bác sĩ, ghi lại tất cả các giờ bận.
+    // Bạn chỉ cần mượn nó để xem khung giờ mình muốn đặt có trống không, rồi ghi thêm giờ mình đặt vào.
+    // Sau đó, bạn vứt cái lịch đầy đủ đó đi (xóa slots_booked) và chỉ giữ lại giờ + ngày bạn đặt (slotTime, slotDate) để lưu vào lịch hẹn của bạn.
     delete docData.slots_booked;
     // Tạo đối tượng appointmentData
     const appointmentData = {
@@ -346,7 +314,7 @@ const bookAppointment = async (req, res) => {
       slotDate,
       date: Date.now(),
     };
-
+    // Tạo một bản ghi lịch hẹn mới trong cơ sở dữ liệu MongoDB và lưu nó.
     const newAppointment = new appointmentModel(appointmentData);
     await newAppointment.save();
 
@@ -382,7 +350,7 @@ const cancelAppointment = async (req, res) => {
     const appointmentData = await appointmentModel.findById(appointmentId);
 
     if (!appointmentData || appointmentData.userId !== userId) {
-      return res.json({ success: false, message: "Unauthorized action" });
+      return res.json({ success: false, message: "Không được phép hủy" });
     }
     //Cập nhật trạng thái lịch hẹn
     await appointmentModel.findByIdAndUpdate(appointmentId, {
@@ -427,7 +395,7 @@ const addReview = async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(doctorId)) {
       return res
         .status(400)
-        .json({ success: false, message: "Invalid doctorId" });
+        .json({ success: false, message: "Mã bác sĩ không hợp lệ" });
     }
 
     // 1. Kiểm tra xem đã khám bác sĩ này và hoàn thành chưa

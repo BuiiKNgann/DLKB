@@ -20,6 +20,8 @@ const AdminContextProvider = (props) => {
   // Tham số thứ nhất: đường dẫn API.
   //Tham số thứ hai: body rỗng ({}), vì không gửi dữ liệu nào.
   //Tham số thứ ba: headers, bao gồm aToken – có thể là token xác thực người dùng (JWT chẳng hạn).
+  //   thông báo cho backend rằng yêu cầu này được gửi từ một admin đã được xác thực, với token aToken đi kèm.
+  // Backend sẽ kiểm tra token này để đảm bảo yêu cầu hợp lệ trước khi xử lý hành động hủy lịch hẹn.
   const getAllDoctors = async () => {
     try {
       const { data } = await axios.post(
@@ -72,23 +74,6 @@ const AdminContextProvider = (props) => {
     }
   };
 
-  // const cancelAppointment = async (appointmentId) => {
-  //   try {
-  //     const { data } = await axios.post(
-  //       backendUrl + "/api/admin/cancel-appointment",
-  //       { appointmentId },
-  //       { headers: { aToken } }
-  //     );
-  //     if (data.success) {
-  //       toast.success(data.message);
-  //       getAllAppointments();
-  //     } else {
-  //       toast.error(data.message);
-  //     }
-  //   } catch (error) {
-  //     toast.error(error.message);
-  //   }
-  // };
   const cancelAppointment = async (appointmentId, cancelReasons) => {
     try {
       const { data } = await axios.post(

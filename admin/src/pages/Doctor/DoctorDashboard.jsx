@@ -13,12 +13,14 @@ const DoctorDashboard = () => {
     cancelAppointment,
   } = useContext(DoctorContext);
   const { currencyFormatter, slotDateFormat } = useContext(AppContext);
+  //Lấy dữ liệu dashboard
   useEffect(() => {
     if (dToken) {
       getDashData();
     }
   }, [dToken]);
-
+  // Component chỉ render nếu dashData tồn tại (dashData không phải null hoặc undefined).
+  //Điều này ngăn giao diện hiển thị trước khi dữ liệu được tải từ API, tránh lỗi truy cập thuộc tính của undefined.
   return (
     dashData && (
       <div className="p-6 bg-gray-50 min-h-screen">

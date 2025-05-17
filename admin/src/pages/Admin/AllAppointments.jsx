@@ -108,6 +108,8 @@ const AllAppointments = () => {
     }
 
     // Nếu chọn lý do khác và có nhập thêm nội dung
+
+    //Ví dụ: Nếu cancelReasons = ["Bệnh nhân yêu cầu", "Lý do khác"] và otherReason = "Bệnh nhân bận", thì finalReasons = ["Bệnh nhân yêu cầu", "Bệnh nhân bận"].
     let finalReasons = [...cancelReasons];
     if (cancelReasons.includes("Lý do khác") && otherReason.trim()) {
       finalReasons = cancelReasons.filter((r) => r !== "Lý do khác");

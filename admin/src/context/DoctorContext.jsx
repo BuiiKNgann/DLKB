@@ -87,26 +87,6 @@ const DoctorContextProvider = (props) => {
     }
   };
 
-  // const cancelAppointment = async (appointmentId, cancelReasons) => {
-  //   try {
-  //     const { data } = await axios.post(
-  //       backendUrl + "/api/doctor/cancel-appointment",
-  //       { appointmentId, cancelReasons }, // ✅ gửi thêm cancelReasons
-  //       { headers: { dToken } } // ✅ headers phải là { token: dToken }
-  //     );
-
-  //     if (data.success) {
-  //       toast.success(data.message);
-  //       getAppointments();
-  //     } else {
-  //       toast.error(data.message);
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //     toast.error(error.message);
-  //   }
-  // };
-
   const getDashData = async () => {
     try {
       const { data } = await axios.get(backendUrl + "/api/doctor/dashboard", {

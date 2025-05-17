@@ -24,6 +24,7 @@ const AddDoctor = () => {
       if (!docImg) {
         return toast.error("Image Not Selected");
       }
+      //Tạo object FormData để chứa dữ liệu form
       const formData = new FormData();
       formData.append("image", docImg);
       formData.append("name", name);
@@ -38,7 +39,7 @@ const AddDoctor = () => {
         "address",
         JSON.stringify({ line1: address1, line2: address2 })
       );
-      //
+      //formData được dùng vì endpoint yêu cầu gửi file ảnh (req.file) và dữ liệu văn bản
       formData.forEach((value, key) => {
         console.log(`${key} : ${value}`);
       });

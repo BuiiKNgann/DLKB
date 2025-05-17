@@ -85,6 +85,7 @@ const MyProfile = () => {
               className="text-xl font-medium text-center py-1 px-3 bg-gray-50 rounded border border-gray-200 w-full mb-2"
               type="text"
               value={userData.name}
+              // đảm bảo các trường khác của userData không bị mất khi chỉ cập nhật name.
               onChange={(e) =>
                 setUserData((prev) => ({ ...prev, name: e.target.value }))
               }

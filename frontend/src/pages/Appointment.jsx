@@ -53,12 +53,12 @@ const Appointment = () => {
     let today = new Date();
     //Lặp qua 7 ngày
     for (let i = 0; i < 7; i++) {
-      //currentDate là bản sao của today, được đặt thành ngày thứ i bằng setDate(today.getDate() + i).
+      //currentDate là bản sao của today tránh thay đổi trực tiếp today., được đặt thành ngày thứ i bằng setDate(today.getDate() + i).
       let currentDate = new Date(today);
       currentDate.setDate(today.getDate() + i);
       let endTime = new Date();
       endTime.setDate(today.getDate() + i);
-      endTime.setHours(17, 30, 0, 0);
+      endTime.setHours(17, 30, 0, 0); //Đặt giờ của endTime thành 17:30
 
       //Thiết lập thời gian bắt đầu cho mỗi ngày
 
@@ -66,17 +66,26 @@ const Appointment = () => {
         currentDate.setHours(
           currentDate.getHours() > 8 ? currentDate.getHours() + 1 : 8
         );
+        //Nếu phút hiện tại > 30, đặt phút là 30.
         currentDate.setMinutes(currentDate.getMinutes() > 30 ? 30 : 0);
       } else {
+        //currentDate không phải hôm nay,đặt thời gian bắt đầu mặc định là 8:00 AM.
         currentDate.setHours(8);
         currentDate.setMinutes(0);
       }
+
+      // Tạo một mảng rỗng timeSlots để lưu các khung giờ khả dụng của ngày hiện tại
+      //Mỗi ngày sẽ có một danh sách khung giờ riêng , được thêm vào timeSlots.
       let timeSlots = [];
+      //currentDate < endTime, nghĩa là vòng lặp tiếp tục chạy khi currentDate (thời gian hiện tại của khung giờ đang xử lý) sớm hơn endTime
+      //       Đảm bảo chỉ tạo các khung giờ trong khoảng thời gian hợp lệ (từ thời gian bắt đầu của currentDate đến 5:30 PM).
+      // Ngăn tạo các khung giờ ngoài giờ làm việc (ví dụ: 6:00 PM, 7:00 PM, ...).
       while (currentDate < endTime) {
         const formattedTime = currentDate.toLocaleTimeString([], {
           hour: "2-digit",
           minute: "2-digit",
         });
+        //Tạo định dạng ngày (slotDate)
         const slotDate = `${currentDate.getDate()}_${
           currentDate.getMonth() + 1
         }_${currentDate.getFullYear()}`;
@@ -99,6 +108,7 @@ const Appointment = () => {
             time: formattedTime,
           });
         }
+        //Tăng currentDate lên 30 phút để tạo khung giờ tiếp theo
         currentDate.setMinutes(currentDate.getMinutes() + 30);
       }
       //Lưu danh sách slot
@@ -113,7 +123,7 @@ const Appointment = () => {
       return navigate("/login");
     }
     try {
-      //Lấy đối tượng Date của slot đầu tiên trong ngày được chọn.
+      //Lấy đối tượng Date của khung giờ đầu đầu tiên trong ngày được chọn.
       //Ví dụ: Nếu slotIndex = 0 (hôm nay), datetime có thể là 2025-05-11T09:00:00.
       const date = docSlots[slotIndex][0].datetime;
       // //Tạo định dạng ngày (slotDate) để gửi đến backend
@@ -309,10 +319,12 @@ map tạo một ô ngày cho mỗi phần tử trong docSlots. */}
                   >
                     {/* item: Trong vòng lặp docSlots.map((item, index) => ...), item là một phần tử của mảng docSlots. Mỗi item là một mảng con chứa các khung giờ khả dụng của một ngày cụ thể. */}
                     {/* Điều kiện item[0] && ...: Đảm bảo ngày có khung giờ khả dụng trước khi hiển thị. */}
+                    {/* Chỉ hiển thị các ngày có khung giờ khả dụng (item[0]), tránh hiển thị ngày không đặt được (như hôm nay, vì đã quá 5:30 PM). */}
                     {item[0] && (
                       <>
                         {/* Hiển thị thứ trong tuần */}
                         <p className="text-sm font-medium mb-1">
+                          {/* là chỉ lấy những ngày trong tuần có khung giờ khả dụng */}
                           {daysOfWeek[item[0].datetime.getDay()]}
                         </p>
                         {/* Hiển thị ngày trong tháng */}

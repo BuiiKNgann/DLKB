@@ -228,6 +228,8 @@ const MyAppointments = () => {
                   key={idx}
                   className="flex gap-2 items-center text-gray-700"
                 >
+                  {/* Nếu checkbox được chọn (checked = true):
+Thêm lý do vào mảng cancelReasons bằng cách sử dụng spread operator ([...cancelReasons, reason]). */}
                   <input
                     type="checkbox"
                     value={reason}

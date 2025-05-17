@@ -47,7 +47,7 @@ const DoctorList = () => {
     setDoctorToDelete(doctor);
     setShowDeleteModal(true);
   };
-
+  //Xử lý thay đổi dữ liệu biểu mẫu
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -57,6 +57,7 @@ const DoctorList = () => {
     try {
       const { data } = await axios.post(
         backendUrl + "/api/admin/update-doctor-profile",
+        // Body yêu cầu chứa:
         {
           doctorId: selectedDoctor._id,
           name: formData.name,
@@ -179,14 +180,16 @@ const DoctorList = () => {
                 { label: "Giới thiệu", name: "about", type: "textarea" },
                 { label: "Kinh nghiệm", name: "experience", type: "text" },
               ].map((field, idx) => (
+                // field: Đối tượng chứa label, name, type
                 <div key={idx} className="flex flex-col gap-1">
                   <label className="text-sm text-gray-600">
-                    {field.label}:
+                    {field.label}: //: Hiển thị nhãn
                   </label>
                   {field.type === "textarea" ? (
+                    // Điều kiện render input hoặc textarea
                     <textarea
                       name={field.name}
-                      value={formData[field.name]}
+                      value={formData[field.name]} //Liên kết giá trị với formData (ví dụ: formData.name là "Nguyễn Văn A").
                       onChange={handleInputChange}
                       placeholder={`Nhập ${field.label.toLowerCase()}`}
                       className="border p-2 rounded min-h-[80px]"
@@ -241,7 +244,7 @@ const DoctorList = () => {
             <div className="flex justify-end gap-3">
               <button
                 onClick={() => {
-                  setShowDeleteModal(false);
+                  setShowDeleteModal(false); //đóng modal
                   setDoctorToDelete(null);
                 }}
                 className="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-lg"
