@@ -147,8 +147,6 @@ const registerUser = async (req, res) => {
       email,
       password: hashedPassword,
     };
-    //Tạo một instance mới của userModel với dữ liệu userData (thường chứa tên, email, mật khẩu, v.v.).
-    //Tạo một đối tượng người dùng mới dựa trên schema
 
     const user = await newUser.save();
     //id người dùng sẽ được mã hóa dựa vào JWT_SECRET này
@@ -300,8 +298,8 @@ const bookAppointment = async (req, res) => {
 
     //delete docData.slots_booked: Xóa trường slots_booked khỏi docData để tránh lưu dữ liệu không cần thiết vào bản ghi lịch hẹn.
     // slots_booked giống như lịch làm việc đầy đủ của bác sĩ, ghi lại tất cả các giờ bận.
-    // Bạn chỉ cần mượn nó để xem khung giờ mình muốn đặt có trống không, rồi ghi thêm giờ mình đặt vào.
-    // Sau đó, bạn vứt cái lịch đầy đủ đó đi (xóa slots_booked) và chỉ giữ lại giờ + ngày bạn đặt (slotTime, slotDate) để lưu vào lịch hẹn của bạn.
+    //  chỉ cần mượn nó để xem khung giờ mình muốn đặt có trống không, rồi ghi thêm giờ mình đặt vào.
+    // Sau đó,  vứt cái lịch đầy đủ đó đi (xóa slots_booked) và chỉ giữ lại giờ + ngày bạn đặt (slotTime, slotDate) để lưu vào lịch hẹn của bạn.
     delete docData.slots_booked;
     // Tạo đối tượng appointmentData
     const appointmentData = {

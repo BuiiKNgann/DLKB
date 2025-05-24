@@ -78,7 +78,7 @@ const Appointment = () => {
       //Mỗi ngày sẽ có một danh sách khung giờ riêng , được thêm vào timeSlots.
       let timeSlots = [];
       //currentDate < endTime, nghĩa là vòng lặp tiếp tục chạy khi currentDate (thời gian hiện tại của khung giờ đang xử lý) sớm hơn endTime
-      //       Đảm bảo chỉ tạo các khung giờ trong khoảng thời gian hợp lệ (từ thời gian bắt đầu của currentDate đến 5:30 PM).
+      // Đảm bảo chỉ tạo các khung giờ trong khoảng thời gian hợp lệ (từ thời gian bắt đầu của currentDate đến 5:30 PM).
       // Ngăn tạo các khung giờ ngoài giờ làm việc (ví dụ: 6:00 PM, 7:00 PM, ...).
       while (currentDate < endTime) {
         const formattedTime = currentDate.toLocaleTimeString([], {
@@ -131,6 +131,8 @@ const Appointment = () => {
         date.getMonth() + 1
       }_${date.getFullYear()}`;
       //Dữ liệu gửi đi chứa: docId, slotDate, slotTime
+      // Headers: Trong các yêu cầu HTTP (như GET, POST), headers cung cấp thông tin bổ sung về yêu cầu,
+      //  chẳng hạn như định dạng dữ liệu, xác thực, hoặc các thông tin khác mà server cần để xử lý.
       const { data } = await axios.post(
         `${backendUrl}/api/user/book-appointment`,
         { docId, slotDate, slotTime },

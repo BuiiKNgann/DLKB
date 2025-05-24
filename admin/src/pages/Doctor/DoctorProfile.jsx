@@ -18,6 +18,9 @@ const DoctorProfile = () => {
         fees: profileData.fees,
         available: profileData.available,
       };
+      //destructuring để lấy thuộc tính data từ đối tượng phản hồi của Axios. Là dữ liệu JSON mà server trả về trong body của phản hồi HTTP
+      //là một đối tượng cấu hình trong Axios,
+      // dùng để gửi header HTTP dToken với giá trị là biến dToken (thường là JWT) trong yêu cầu POST. Nó giúp xác thực danh tính bác sĩ khi gọi API
       const { data } = await axios.post(
         backendUrl + "/api/doctor/update-profile",
         updateData,

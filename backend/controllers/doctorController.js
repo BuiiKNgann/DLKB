@@ -30,6 +30,7 @@ const doctorList = async (req, res) => {
 };
 
 // API đăng nhập bác sĩ
+//Xử lý kết quả so sánh mật khẩu
 const loginDoctor = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -224,7 +225,6 @@ const availableDoctors = async (req, res) => {
       available: true,
     };
     // $regex: Tìm kiếm chuỗi khớp với speciality.
-    // new RegExp(speciality, "i"): Tạo biểu thức chính quy, với "i" để không phân biệt hoa thường (case-insensitive).
     if (speciality) {
       query.speciality = { $regex: new RegExp(speciality, "i") };
     }
