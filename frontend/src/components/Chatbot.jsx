@@ -3,7 +3,7 @@ import ChatHeader from "./ChatHeader";
 import ChatFooter from "./ChatFooter";
 import Message from "./Message";
 
-const API_KEY = "AIzaSyA6YFHqj8ukTcTXRkk8OdNwQaloxJm4cZI"; // Dùng biến môi trường hoặc khóa mới
+const API_KEY = "AIzaSyA6YFHqj8ukTcTXRkk8OdNwQaloxJm4cZI";
 const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`; // Sử dụng model gemini-1.5-flash
 
 export default function Chatbot() {
@@ -30,7 +30,7 @@ export default function Chatbot() {
     scrollToBottom();
   }, [messages]);
 
-  // 🔥 Danh sách kịch bản đặt lịch khám
+  //  Danh sách kịch bản đặt lịch khám
   const scriptedResponses = [
     {
       keywords: ["đặt lịch", "khám bệnh", "lịch khám"],

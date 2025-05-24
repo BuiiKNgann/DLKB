@@ -411,16 +411,16 @@ const addReview = async (req, res) => {
     }
 
     // 2. Kiểm tra xem đã review bác sĩ này chưa
-    const existingReview = await reviewModel.findOne({
-      user: userId,
-      doctor: doctorId,
-    });
+    // const existingReview = await reviewModel.findOne({
+    //   user: userId,
+    //   doctor: doctorId,
+    // });
 
-    if (existingReview) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Bạn đã đánh giá bác sĩ này rồi" });
-    }
+    // if (existingReview) {
+    //   return res
+    //     .status(400)
+    //     .json({ success: false, message: "Bạn đã đánh giá bác sĩ này rồi" });
+    // }
 
     // 3. Lưu review
     const newReview = await reviewModel.create({

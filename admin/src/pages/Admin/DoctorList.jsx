@@ -183,7 +183,8 @@ const DoctorList = () => {
                 // field: Đối tượng chứa label, name, type
                 <div key={idx} className="flex flex-col gap-1">
                   <label className="text-sm text-gray-600">
-                    {field.label}: //: Hiển thị nhãn
+                    {/* Hiển thị nhãn  */}
+                    {field.label}
                   </label>
                   {field.type === "textarea" ? (
                     // Điều kiện render input hoặc textarea

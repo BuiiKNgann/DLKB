@@ -54,7 +54,7 @@ const DoctorContextProvider = (props) => {
     try {
       const { data } = await axios.post(
         backendUrl + "/api/doctor/cancel-appointment",
-        { appointmentId, cancelReasons }, // ✅ gửi thêm lý do hủy
+        { appointmentId, cancelReasons }, //  gửi thêm lý do hủy
         { headers: { dToken } }
       );
       if (data.success) {
