@@ -120,43 +120,117 @@ export const removeFavoriteDoctor = async (req, res) => {
 // Đăng ký người dùng
 //req (request): Chứa dữ liệu gửi từ client
 //res (response): Dùng để gửi phản hồi về client, thường dưới dạng JSON.
+// const registerUser = async (req, res) => {
+//   try {
+//     const { name, email, password } = req.body;
+
+//     // Kiểm tra dữ liệu đầu vào
+//     if (!name || !email || !password) {
+//       return res.json({ success: false, message: "Sai thông tin" });
+//     }
+
+//     // Kiểm tra định dạng email
+//     if (!validator.isEmail(email)) {
+//       return res.json({ success: false, message: "Vui lòng nhập lại email" });
+//     }
+
+//     // Kiểm tra độ dài mật khẩu
+//     if (password.length < 8) {
+//       return res.json({
+//         success: false,
+//         message: "Vui lòng nhập mật khẩu mạnh hơn",
+//       });
+//     }
+
+//     // Kiểm tra email đã tồn tại chưa
+//     const existingUser = await User.findOne({ email });
+//     if (existingUser) {
+//       return res.json({ success: false, message: "Email đã được sử dụng" });
+//     }
+
+//     // Mã hóa mật khẩu
+//     const salt = await bcrypt.genSalt(10);
+//     const hashedPassword = await bcrypt.hash(password, salt);
+
+//     // Tạo đối tượng người dùng mới
+//     const userData = {
+//       name,
+//       email,
+//       password: hashedPassword,
+//     };
+
+//     // Tạo tài liệu Mongoose từ model User
+//     const newUser = new User(userData); // Sửa lỗi: Tạo newUser từ model User
+//     const user = await newUser.save(); // Lưu vào cơ sở dữ liệu
+
+//     // Tạo token JWT
+//     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+
+//     // Trả về phản hồi thành công
+//     res.json({ success: true, token });
+//   } catch (error) {
+//     console.error("Lỗi khi đăng ký người dùng:", error);
+//     res.json({ success: false, message: error.message });
+//   }
+// };
 const registerUser = async (req, res) => {
   try {
     const { name, email, password } = req.body;
-    if (!name || !password || !email) {
-      return res.json({ success: false, message: "Sai thông tin" });
+
+    // Kiểm tra dữ liệu đầu vào
+    if (!name || !email || !password) {
+      return res.status(400).json({ success: false, message: "Sai thông tin" });
     }
-    // validating email format
+
+    // Kiểm tra định dạng email
     if (!validator.isEmail(email)) {
-      return res.json({ success: false, message: "Vui lòng nhập lại email" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Vui lòng nhập lại email" });
     }
-    //validating strong password
+
+    // Kiểm tra độ dài mật khẩu
     if (password.length < 8) {
-      return res.json({
+      return res.status(400).json({
         success: false,
         message: "Vui lòng nhập mật khẩu mạnh hơn",
       });
     }
-    // hashing user password
+
+    // Kiểm tra email đã tồn tại chưa
+    const existingUser = await userModel.findOne({ email }); // Sửa từ User thành userModel
+    if (existingUser) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Email đã được sử dụng" });
+    }
+
+    // Mã hóa mật khẩu
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
-    //dữ liệu sẽ được sử dụng để tạo một bản ghi người dùng mới trong cơ sở dữ liệu.
-    //nghĩa là nó sẽ tạo ra 1 đối tượng  chứa bản ghi mới vào cơ sở dữ liệu dựa vào schema
+
+    // Tạo đối tượng người dùng mới
     const userData = {
       name,
       email,
       password: hashedPassword,
+      // Các trường khác (image, address, gender, dob, phone, favoriteDoctors) sẽ dùng giá trị mặc định từ schema
     };
 
-    const user = await newUser.save();
-    //id người dùng sẽ được mã hóa dựa vào JWT_SECRET này
-    //Khi người dùng gửi lại chuỗi JWT, server sử dụng JWT_SECRET để xác minh
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
-    res.json({ success: true, token });
-    // _id
+    // Tạo tài liệu Mongoose từ model userModel
+    const newUser = new userModel(userData); // Sửa từ user thành userModel
+    const user = await newUser.save(); // Lưu vào cơ sở dữ liệu
+
+    // Tạo token JWT
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: "1d", // Token hết hạn sau 1 ngày
+    });
+
+    // Trả về phản hồi thành công
+    res.status(201).json({ success: true, token });
   } catch (error) {
-    console.log(error);
-    res.json({ success: false, message: error.message });
+    console.error("Lỗi khi đăng ký người dùng:", error);
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 // đăng nhập
